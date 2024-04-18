@@ -24,7 +24,6 @@ def main():
         print("ERROR: Could not read CSV file. ", e)
         exit(1)
         
-        
     # Compute frequent itemsets
     frequent_itemsets = get_frequent_itemsets(df)
     
