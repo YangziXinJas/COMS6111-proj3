@@ -15,12 +15,12 @@ In the directory of the repository, run:
 In the directory of the repository, run:
 
   ```bash
-  python3 main.py <INTEGRATED-DATASET.csv> <min_sup> <min_conf>
+  python3 main.py <INTEGRATED_DATASET.csv> <min_sup> <min_conf>
   ```
    
 where:
-- `<INTEGRATED-DATASET.csv>` is the file name
-    (in this case, use `311_Service_Requests.csv`)
+- `<INTEGRATED_DATASET.csv>` is the file name
+    (in this case, use `INTEGRATED_DATASET.csv`)
 
 - `<min_sup>` is the minimum support 
         (a value between 0 and 1)
@@ -43,7 +43,7 @@ in particular, if you decided to implement variations of the original a-priori a
 
 ### Sample run
   ```bash
-  python3 main.py 311_Service_Requests.csv <min_sup> <min_conf>
+  python3 main.py INTEGRATED_DATASET.csv <min_sup> <min_conf>
   ```
 
   Results: Briefly explain why the results are indeed compelling.
