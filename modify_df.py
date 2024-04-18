@@ -16,7 +16,6 @@ def main():
         print("ERROR: Could not read CSV file. ", e)
         exit(1) 
     
-    print("begin")
     
     # Create duration column
     df['created_date'] = pd.to_datetime(df['created_date'], errors='coerce') 
@@ -58,7 +57,7 @@ def main():
 
       
     print(df.head())
-    print(df.columns)
+    print("Number of rows:", df.shape[0])
             
     # Save new dataset
     df.to_csv("INTEGRATED_DATASET.csv", index=False)

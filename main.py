@@ -17,6 +17,7 @@ def main():
     # Read in file
     try:
         df = pd.read_csv(DATASET)
+        print("Number of rows:", df.shape[0])
     except FileNotFoundError:
         print("ERROR: File not found.")
         exit(1)
