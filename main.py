@@ -83,7 +83,7 @@ def print_frequent_itemsets(frequent_itemsets):
     '''Print frequent itemsets'''
     
     print("------------")
-    print(f"Frequent itemsets (min_sup={MIN_SUP*100}%)")
+    print(f"Frequent itemsets (min_sup={int(float(MIN_SUP)*100)}%)")
     
 
     print("------------")
@@ -94,7 +94,7 @@ def print_high_conf_rules(high_conf_rules):
     '''Print high-confidence association rules'''
     
     print("------------")
-    print(f"High-confidence association rules (min_conf={MIN_CONF*100}%)")
+    print(f"High-confidence association rules (min_conf={int(float(MIN_CONF)*100)}%)")
     
     print("------------")
     
