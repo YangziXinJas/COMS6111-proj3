@@ -1,5 +1,7 @@
 import sys
 import pandas as pd
+from itertools import combinations
+from collections import defaultdict
 
 # Input variables
 DATASET = None
@@ -16,7 +18,7 @@ def main():
     
     # Read in file
     try:
-        df = pd.read_csv(DATASET)
+        df = pd.read_csv(DATASET, nrows=1000)
         print("Number of rows:", df.shape[0])
     except FileNotFoundError:
         print("ERROR: File not found.")
@@ -54,10 +56,48 @@ def main():
 ###########################
 
 def get_frequent_itemsets(df):
-    '''Compute all frequent itemsets with the a-priori algorithm.'''
+    '''Compute all frequent itemsets with the a-priori algorithm.''' 
+    # Iterate through all the rows and get a dictionary of unique items and their count
+    item_counts = dict()
+    for _, row in df.iterrows():
+        for item in row:
+            if pd.isna(item):
+                continue
+            
+            if item not in item_counts.keys():
+                item_counts[item] = 1
+            else:
+                item_counts[item] += 1
     
+    frequent_items = set(item for item, count in item_counts.items() if count/len(df) >= MIN_SUP)
     
-    return "" #returns frequent itemsets
+    frequent_itemsets = [frozenset([item]) for item in frequent_items]
+    result = {frozenset([item]): item_counts[item] for item in frequent_items}
+    
+    k = 2
+    while True:
+        # generate candidate itemsets
+        candidate_itemsets = set()
+        for set1, set2 in combinations(frequent_itemsets, 2):
+            candidate_itemset = set1.union(set2)
+            if len(candidate_itemset) == k:
+                candidate_itemsets.add(candidate_itemset)
+        
+        # calculate support for each candidate itemset
+        candidate_count = defaultdict(int)
+        for _, row in df.iterrows():
+            for candidate in candidate_itemsets:
+                if candidate.issubset(row):
+                    candidate_count[candidate] += 1
+        
+        frequent_itemsets = set(itemset for itemset, count in candidate_count.items() if count/len(df) >= MIN_SUP)
+        result.update({itemset: candidate_count[itemset] for itemset in frequent_itemsets})
+        
+        if not frequent_itemsets:
+            break
+
+        k += 1
+    return dict(sorted(result.items(), key=lambda x: x[1], reverse=True)) #returns frequent itemsetscandidate_count
 
 
 
@@ -109,8 +149,8 @@ if __name__ == "__main__":
     
     try:
         DATASET = str(sys.argv[1])
-        MIN_SUP= str(sys.argv[2])
-        MIN_CONF = str(sys.argv[3])
+        MIN_SUP= float(sys.argv[2])
+        MIN_CONF = float(sys.argv[3])
     except:
         print("Usage: python3 main.py <INTEGRATED-DATASET.csv> <min_sup> <min_conf>")
         exit(1)
