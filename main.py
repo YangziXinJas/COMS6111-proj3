@@ -1,6 +1,6 @@
 import sys
 import pandas as pd
-from itertools import combinations
+from itertools import combinations, chain
 from collections import defaultdict
 
 # Input variables
@@ -18,7 +18,7 @@ def main():
     
     # Read in file
     try:
-        df = pd.read_csv(DATASET, nrows=1000)
+        df = pd.read_csv(DATASET, nrows=10000)
         print("Number of rows:", df.shape[0])
     except FileNotFoundError:
         print("ERROR: File not found.")
@@ -29,9 +29,8 @@ def main():
         
     # Compute frequent itemsets
     frequent_itemsets = get_frequent_itemsets(df)
-    
     # Build all association rules
-    all_association_rules = get_association_rules(frequent_itemsets)
+    all_association_rules = get_association_rules(frequent_itemsets, df)
     
     # Print high confidence association rules
     high_conf_rules = get_high_conf_rules(all_association_rules)
@@ -68,7 +67,7 @@ def get_frequent_itemsets(df):
                 item_counts[item] = 1
             else:
                 item_counts[item] += 1
-    
+    print(item_counts)
     frequent_items = set(item for item, count in item_counts.items() if count/len(df) >= MIN_SUP)
     
     frequent_itemsets = [frozenset([item]) for item in frequent_items]
@@ -101,12 +100,35 @@ def get_frequent_itemsets(df):
 
 
 
-def get_association_rules(frequent_itemsets):
+def get_association_rules(frequent_itemsets, df):
     '''Build all possible association rules for each of the frequent itemsets'''
+    rules = []
+
+    # iterate through all frequent itemsets
+    for itemset in frequent_itemsets:
+        if len(itemset) == 1:
+            continue
+        
+
+        subsets = [frozenset(subset) for subset in powerset(itemset)]
+        for subset in subsets:
+            # skip empty set or the itemset itself
+            if not subset or not itemset.difference(subset):
+                continue
+
+            # calculate support and confidence of the rule
+            support = frequent_itemsets[itemset] / len(df)
+            confidence = frequent_itemsets[itemset] / frequent_itemsets[subset]
+
+            if confidence >= MIN_CONF and support >= MIN_SUP:
+                rule = (f"{[subset]} => {itemset.difference(subset)} (support={support:.2f}, confidence={confidence:.2f})")
+                rules.append(rule, confidence)
     
-    return "" #returns frequent itemsets
+    return sorted(rules, key=lambda x: x[1], reverse=True)
 
-
+def powerset(s):
+    '''Generate all possible subsets of a set'''
+    return chain.from_iterable(combinations(s, r) for r in range(len(s) + 1))
 
 def get_high_conf_rules(all_association_rules):
     '''Identify association rules with a confidence of at least MIN_CONF and print them.'''
