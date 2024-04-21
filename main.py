@@ -29,8 +29,10 @@ def main():
         
     # Compute frequent itemsets
     frequent_itemsets = get_frequent_itemsets(df)
+    # print(frequent_itemsets)
+    
     # Build all association rules
-    all_association_rules = get_association_rules(frequent_itemsets, df)
+    all_association_rules = get_association_rules(frequent_itemsets.copy(), df)
     
     # Print high confidence association rules
     high_conf_rules = get_high_conf_rules(all_association_rules)
@@ -41,7 +43,7 @@ def main():
         sys.stdout = f
         
         # Print
-        print_frequent_itemsets(frequent_itemsets)
+        print_frequent_itemsets(frequent_itemsets, len(df))
         print_high_conf_rules(high_conf_rules)
         
         # Reset stdout back to the console
@@ -56,6 +58,7 @@ def main():
 
 def get_frequent_itemsets(df):
     '''Compute all frequent itemsets with the a-priori algorithm.''' 
+    
     # Iterate through all the rows and get a dictionary of unique items and their count
     item_counts = dict()
     for _, row in df.iterrows():
@@ -67,7 +70,7 @@ def get_frequent_itemsets(df):
                 item_counts[item] = 1
             else:
                 item_counts[item] += 1
-    print(item_counts)
+    
     frequent_items = set(item for item, count in item_counts.items() if count/len(df) >= MIN_SUP)
     
     frequent_itemsets = [frozenset([item]) for item in frequent_items]
@@ -75,14 +78,14 @@ def get_frequent_itemsets(df):
     
     k = 2
     while True:
-        # generate candidate itemsets
+        # Generate candidate itemsets
         candidate_itemsets = set()
         for set1, set2 in combinations(frequent_itemsets, 2):
             candidate_itemset = set1.union(set2)
             if len(candidate_itemset) == k:
                 candidate_itemsets.add(candidate_itemset)
         
-        # calculate support for each candidate itemset
+        # Calculate support for each candidate itemset
         candidate_count = defaultdict(int)
         for _, row in df.iterrows():
             for candidate in candidate_itemsets:
@@ -96,7 +99,10 @@ def get_frequent_itemsets(df):
             break
 
         k += 1
-    return dict(sorted(result.items(), key=lambda x: x[1], reverse=True)) #returns frequent itemsetscandidate_count
+        
+    # Return frequent itemsets candidate_count
+    print(dict(sorted(result.items(), key=lambda x: x[1], reverse=True)) )
+    return dict(sorted(result.items(), key=lambda x: x[1], reverse=True)) 
 
 
 
@@ -121,9 +127,10 @@ def get_association_rules(frequent_itemsets, df):
             confidence = frequent_itemsets[itemset] / frequent_itemsets[subset]
 
             if confidence >= MIN_CONF and support >= MIN_SUP:
-                rule = (f"{[subset]} => {itemset.difference(subset)} (support={support:.2f}, confidence={confidence:.2f})")
-                rules.append(rule, confidence)
+                rule = (f"{list(subset)} => {list(itemset.difference(subset))} (support={support:.2f}, confidence={confidence:.2f})")
+                rules.append((rule, confidence))
     
+    # print(sorted(rules, key=lambda x: x[1], reverse=True))
     return sorted(rules, key=lambda x: x[1], reverse=True)
 
 def powerset(s):
@@ -134,7 +141,7 @@ def get_high_conf_rules(all_association_rules):
     '''Identify association rules with a confidence of at least MIN_CONF and print them.'''
     
     
-    return "" # returns high confidence rules
+    return all_association_rules # returns high confidence rules
     
     
     
@@ -142,24 +149,28 @@ def get_high_conf_rules(all_association_rules):
 #     PRINT FUNCTIONS     #
 ###########################
 
-def print_frequent_itemsets(frequent_itemsets):
+def print_frequent_itemsets(frequent_itemsets, df_size):
     '''Print frequent itemsets'''
     
-    print("------------")
-    print(f"Frequent itemsets (min_sup={int(float(MIN_SUP)*100)}%)")
+    print("==============")
+    print(f"--------------Frequent itemsets (min_sup={int(float(MIN_SUP)*100)}%)")
     
-
-    print("------------")
+    for key in frequent_itemsets.keys():
+        print(f"{list(key)} ({(frequent_itemsets[key]/df_size)*100})%")
+        
+    print("==============")
 
 
 
 def print_high_conf_rules(high_conf_rules):
     '''Print high-confidence association rules'''
     
-    print("------------")
-    print(f"High-confidence association rules (min_conf={int(float(MIN_CONF)*100)}%)")
+    print("==============")
+    print(f"--------------High-confidence association rules (min_conf={int(float(MIN_CONF)*100)}%)")
     
-    print("------------")
+    for item in high_conf_rules:
+        print(item[0])
+    print("==============")
     
     
     
