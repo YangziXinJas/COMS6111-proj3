@@ -29,7 +29,6 @@ def main():
         
     # Compute frequent itemsets
     frequent_itemsets = get_frequent_itemsets(df)
-    # print(frequent_itemsets)
     
     # Build all association rules
     all_association_rules = get_association_rules(frequent_itemsets.copy(), df)
@@ -101,7 +100,6 @@ def get_frequent_itemsets(df):
         k += 1
         
     # Return frequent itemsets candidate_count
-    print(dict(sorted(result.items(), key=lambda x: x[1], reverse=True)) )
     return dict(sorted(result.items(), key=lambda x: x[1], reverse=True)) 
 
 
@@ -130,7 +128,6 @@ def get_association_rules(frequent_itemsets, df):
                 rule = (f"{list(subset)} => {list(itemset.difference(subset))} (support={support:.2f}, confidence={confidence:.2f})")
                 rules.append((rule, confidence))
     
-    # print(sorted(rules, key=lambda x: x[1], reverse=True))
     return sorted(rules, key=lambda x: x[1], reverse=True)
 
 def powerset(s):
@@ -156,7 +153,7 @@ def print_frequent_itemsets(frequent_itemsets, df_size):
     print(f"--------------Frequent itemsets (min_sup={int(float(MIN_SUP)*100)}%)")
     
     for key in frequent_itemsets.keys():
-        print(f"{list(key)} ({(frequent_itemsets[key]/df_size)*100})%")
+        print(f"{list(key)} ({round(((frequent_itemsets[key]/df_size)*100), 2)})%")
         
     print("==============")
 
