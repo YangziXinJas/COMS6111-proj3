@@ -33,7 +33,9 @@ where:
 ### Overall structure
 A clear description of the internal design of your project; 
 ### Details
-in particular, if you decided to implement variations of the original a-priori algorithm (see above), you must explain precisely what variations you have implemented and why.
+Unlike the original Apriori algorithm which evaluates all possible item combinations explicitly, this implementation progressively builds candidate itemsets only from previously identified frequent itemsets. This reduces the computational overhead significantly.
+
+Association rules are generated only from the identified frequent itemsets, which simplifies the rule generation phase. This focuses the computational effort only on viable candidate rules.
 
 ## About the dataset
 
