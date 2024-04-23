@@ -45,9 +45,15 @@ Association rules are generated only from the identified frequent itemsets, whic
 
 ## About the dataset
 
-1. which NYC Open Data data set(s) you used to generate the INTEGRATED-DATASET file
-2. what (high-level) procedure you used to map the original NYC Open Data data set(s) into your INTEGRATED-DATASET file
-3. what makes your choice of INTEGRATED-DATASET file compelling (in other words, justify your choice of NYC Open Data data set(s)). The explanation should be detailed enough to allow us to recreate your INTEGRATED-DATASET file exactly from scratch from the NYC Open Data site.
+This project is developed with the [311 Service Requests 2010 to Present Dataset](https://data.cityofnewyork.us/Social-Services/311-Service-Requests-from-2010-to-Present/erm2-nwe9/about_data) from NYC OpenData.
+
+In order to map this dataset into our project, we first removed all rows not between the years of 2022 and 2024. This cut the data down from 30+ million rows to 3+ million rows. This choice was simply to bring the runtime down.
+
+Next, we dropped all columns that were either non-categorical, mostly empty cells, or seemed unlikely to yield useful results. We kept the following columns: Complaint Type, Location Type, Incident Zip, Street Name, City, Status, Community Board, Borough, Police Precinct.
+
+We also cleaned up some columns to make them better fit categorical data. For example, the "Location Type" column had both "Residential Building/Home" and "RESIDENTIAL BUILDING" as options (depending on what department logged the claim). We combined this data to all say "Residential Building/Home."
+
+We chose this dataset to see the relations among complaints accross boroughs. We extracted high association rules from this dataset and discovered that when a complain is open, it is likely to be from a residential building. Illegal parking, on the other hand, is a large portion of the complaints, but they (and other street complaints) are mostly resolved. Additionally, from the frequent itemsets and their supports, we can see that the amount of complaints coming from each borough is relatively similar; however, the Bronx seemed to have the least closed complaints in relation to the amount total. 
 
 ### Sample run
   ```bash
@@ -73,5 +79,4 @@ Files included:
 - `requirements.txt`
 
 References:
-
-Notes:
+- Recommended course readings.
