@@ -20,7 +20,6 @@ In the directory of the repository, run:
    
 where:
 - `<INTEGRATED_DATASET.csv>` is the file name
-    (in this case, use `INTEGRATED_DATASET.csv`)
 
 - `<min_sup>` is the minimum support 
         (a value between 0 and 1)
@@ -53,14 +52,14 @@ Next, we dropped all columns that were either non-categorical, mostly empty cell
 
 We also cleaned up some columns to make them better fit categorical data. For example, the "Location Type" column had both "Residential Building/Home" and "RESIDENTIAL BUILDING" as options (depending on what department logged the claim). We combined this data to all say "Residential Building/Home."
 
-We chose this dataset to see the relations among complaints accross boroughs. We extracted high association rules from this dataset and discovered that when a complain is open, it is likely to be from a residential building. Illegal parking, on the other hand, is a large portion of the complaints, but they (and other street complaints) are mostly resolved. Additionally, from the frequent itemsets and their supports, we can see that the amount of complaints coming from each borough is relatively similar; however, the Bronx seemed to have the least closed complaints in relation to the amount total. 
+We chose this dataset to see the relations among complaints accross boroughs. We also wanted to see if different complaints are treated similarly (i.e speed of completion).
 
 ### Sample run
   ```bash
-  python3 main.py INTEGRATED_DATASET.csv <min_sup> <min_conf>
+  python3 main.py INTEGRATED_DATASET.csv 0.2 0.85
   ```
 
-  Results: Briefly explain why the results are indeed compelling.
+ The results of this run can be found in `example_run.txt`. For this run, we extracted high association rules from this dataset and discovered that when a complain is open, it is likely to be from a residential building. Illegal parking, on the other hand, is a large portion of the complaints, but they (and other street complaints) are mostly resolved. Additionally, from the frequent itemsets and their supports, we can see that the amount of complaints coming from each borough is relatively similar; however, the Bronx seemed to have the least closed complaints in relation to the amount total. 
 
 
 ## About the repository
