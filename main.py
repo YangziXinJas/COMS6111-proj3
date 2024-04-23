@@ -18,7 +18,7 @@ def main():
     
     # Read in file
     try:
-        df = pd.read_csv(DATASET, nrows=10000)
+        df = pd.read_csv(DATASET, nrows=100000)
         print("Number of rows:", df.shape[0])
     except FileNotFoundError:
         print("ERROR: File not found.")
@@ -153,7 +153,7 @@ def print_frequent_itemsets(frequent_itemsets, df_size):
     print(f"--------------Frequent itemsets (min_sup={int(float(MIN_SUP)*100)}%)")
     
     for key in frequent_itemsets.keys():
-        print(f"{list(key)} ({round(((frequent_itemsets[key]/df_size)*100), 2)})%")
+        print(f"{list(key)} ({round(((frequent_itemsets[key]/df_size)*100), 2)}%)")
         
     print("==============")
 
